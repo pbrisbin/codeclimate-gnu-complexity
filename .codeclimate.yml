@@ -1,3 +1,5 @@
 engines:
   gnu-complexity:
     enabled: true
+    config:
+      threshold: 50
