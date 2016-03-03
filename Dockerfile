@@ -11,9 +11,7 @@ RUN apt-get update && \
     curl \
     jq \
     xz-utils && \
-  rm -rf /var/lib/apt/lists/*
-
-RUN cd /tmp && \
+  cd /tmp && \
   curl \
     --location --remote-name --silent \
     http://ftpmirror.gnu.org/complexity/complexity-${COMPLEXITY_VERSION}.tar.xz && \
@@ -24,7 +22,13 @@ RUN cd /tmp && \
     --disable-silent-rules \
     --prefix=/usr/local && \
   make install && \
-  rm -rf /tmp/complexity-*
+  apt-get remove -y --purge \
+    build-essential \
+    curl \
+    xz-utils && \
+  apt-get autoremove -y && \
+  rm -rf /tmp/complexity-* && \
+  rm -rf /var/lib/apt/lists/*
 
 RUN adduser \
   --uid 9000 \
