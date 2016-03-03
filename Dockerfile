@@ -9,6 +9,7 @@ RUN apt-get update && \
     autogen \
     build-essential \
     curl \
+    jq \
     xz-utils && \
   rm -rf /var/lib/apt/lists/*
 

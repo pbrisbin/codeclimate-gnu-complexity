@@ -1,35 +1,55 @@
 #!/bin/sh
 score_files() {
-  local threshold=$1; shift
-
   find "$@" -type f -name "*.c" \
-    -exec complexity --threshold=$threshold {} +
+    -exec complexity --threshold="$threshold" {} +
 }
 
 parse() {
-  sed -r '
-    /^\s*([0-9]+).*\.\/(.*)\(([0-9]+)\): (.*)$/!d;
-    s//\1|\2|\3|\4/g;
-  '
+  local data_line='\s*([0-9]+)\s*([0-9]+)\s*([0-9]+)\s*(\.\/)?(.*)\(([0-9]+)\): (.*)'
+
+  sed -r '/^'"$data_line"'$/!d; s//\1|\5|\6|\7/'
+}
+
+format() {
+  while IFS="|" read -r score path line name; do
+    printf "{"
+    printf "\"type\":\"issue\","
+    printf "\"check_name\":\"complex-definition\","
+    printf "\"description\":\"High complexity in \`$name\`: [$score/$threshold]\"",
+    printf "\"categories\":[\"Complexity\"],"
+    printf "\"location\":{\"path\":\"$path\",\"lines\":{\"begin\":$line,\"end\":$line}},"
+    printf "\"remediation_points\":$(remediation_points "$score"),"
+    printf "\"severity\":\"normal\","
+    printf "\"fingerprint\":\"gnu-complexity-$path-$name\""
+    printf "}\0"
+  done
+}
+
+score_each() {
+  local path
+
+  while IFS="\n" read -r path; do
+    score_files "$path" | parse | format
+  done
 }
 
 remediation_points() {
-  echo 50000
+  local score=$1
+
+  echo 50000 # TODO: scale based on overrage
 }
 
-# TODO: read /config.json
-threshold=30
-include_paths=
+if [ -f /config.json ]; then
+  threshold=$(jq --raw-output ".config.threshold" /config.json)
 
-score_files $threshold . | parse | while IFS="|" read -r score path line name; do
-  printf "{"
-  printf "\"type\":\"issue\","
-  printf "\"check_name\":\"complex-definition\","
-  printf "\"description\":\"High complexity in \`$name\`: [$score/$threshold]\"",
-  printf "\"categories\":[\"Complexity\"],"
-  printf "\"location\":{\"path\":\"$path\",\"lines\":{\"begin\":$line,\"end\":$line}},"
-  printf "\"remediation_points\":$(remediation_points),"
-  printf "\"severity\":\"normal\","
-  printf "\"fingerprint\":\"gnu-complexity-$path-$name-$score\""
-  printf "}\0"
-done
+  if [ -z "$threshold" ] || [ "$threshold" = null ]; then
+    threshold=30
+  fi
+
+  # Note: /config.json existing but without include_paths is not supported
+  jq --raw-output ".include_paths | .[]" /config.json | score_each
+else
+  threshold=30
+
+  score_files . | parse | format
+fi
