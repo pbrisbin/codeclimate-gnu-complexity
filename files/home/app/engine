@@ -34,9 +34,9 @@ score_each() {
 }
 
 remediation_points() {
-  local score=$1
+  local score=$1 base=1000000 over=70000
 
-  echo 50000 # TODO: scale based on overrage
+  echo $(( base + (over * (score - threshold)) ))
 }
 
 if [ -f /config.json ]; then
