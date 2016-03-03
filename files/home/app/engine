@@ -1,0 +1,35 @@
+#!/bin/sh
+score_files() {
+  local threshold=$1; shift
+
+  find "$@" -type f -name "*.c" \
+    -exec complexity --threshold=$threshold {} +
+}
+
+parse() {
+  sed -r '
+    /^\s*([0-9]+).*\.\/(.*)\(([0-9]+)\): (.*)$/!d;
+    s//\1|\2|\3|\4/g;
+  '
+}
+
+remediation_points() {
+  echo 50000
+}
+
+# TODO: read /config.json
+threshold=30
+include_paths=
+
+score_files $threshold . | parse | while IFS="|" read -r score path line name; do
+  printf "{"
+  printf "\"type\":\"issue\","
+  printf "\"check_name\":\"complex-definition\","
+  printf "\"description\":\"High complexity in \`$name\`: [$score/$threshold]\"",
+  printf "\"categories\":[\"Complexity\"],"
+  printf "\"location\":{\"path\":\"$path\",\"lines\":{\"begin\":$line,\"end\":$line}},"
+  printf "\"remediation_points\":$(remediation_points),"
+  printf "\"severity\":\"normal\","
+  printf "\"fingerprint\":\"gnu-complexity-$path-$name-$score\""
+  printf "}\0"
+done
