@@ -1,0 +1,3 @@
+engines:
+  gnu-complexity:
+    enabled: true
