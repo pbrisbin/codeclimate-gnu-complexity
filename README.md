@@ -4,9 +4,6 @@ Code Climate Engine to run [GNU Complexity][]
 
 [GNU Complexity]: https://www.gnu.org/software/complexity/manual/complexity.html
 
-**NOTE**: This engine is in its infancy and there are various un-implemented
-bits I'm currently working on. Try at your own risk.
-
 ## Installation
 
 ```
