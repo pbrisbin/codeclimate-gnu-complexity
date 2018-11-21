@@ -25,3 +25,7 @@ engines:
 ```
 codeclimate analyze --dev
 ```
+
+--
+
+[CHANGELOG](./CHANGELOG.md) | [LICENSE](./LICENSE)
