@@ -11,6 +11,9 @@ jobs:
           reusable: true
           version: 17.07.0-ce
       - run:
+          name: Dependencies
+          command: apk add --upgrade make
+      - run:
           name: Build
           command: make image image.test
       - run:
