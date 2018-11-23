@@ -1,15 +1,17 @@
-.PHONY: image example
-
 IMAGE_NAME ?= codeclimate/codeclimate-gnu-complexity
 
+all: image image.test test
+
+.PHONY: image
 image:
 	docker build --tag $(IMAGE_NAME) .
 
-test: image
-	cram test
+.PHONY: image.test
+image.test:
+	docker build \
+	  --file Dockerfile.test \
+	  --tag $(IMAGE_NAME)-test .
 
-citest:
-	cram test
-
-example: image
-	docker run --rm --volume $(PWD):/code $(IMAGE_NAME)
+.PHONY: test
+test:
+	docker run --rm $(IMAGE_NAME)-test

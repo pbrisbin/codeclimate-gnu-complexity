@@ -1,0 +1,8 @@
+{
+  "include_paths": [
+    "./"
+  ],
+  "config": {
+    "threshold": 210
+  }
+}

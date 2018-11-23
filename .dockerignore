@@ -1,7 +1,6 @@
+.circleci
 .dockerignore
 .git
 Dockerfile
 Makefile
-circle.yml
 tags
-test

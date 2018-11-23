@@ -1,0 +1,5 @@
+{
+  "include_paths": [
+    "fixtures/printf-args.c"
+  ]
+}

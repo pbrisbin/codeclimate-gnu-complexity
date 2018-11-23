@@ -1,0 +1,21 @@
+---
+version: 2.0
+
+jobs:
+  build:
+    docker:
+      - image: docker:17.07.0-ce
+    steps:
+      - checkout
+      - setup_remote_docker:
+          reusable: true
+          version: 17.07.0-ce
+      - run:
+          name: Dependencies
+          command: apk add --update make
+      - run:
+          name: Build
+          command: make image image.test
+      - run:
+          name: Test
+          command: make test
