@@ -12,12 +12,7 @@ jobs:
       - run:
           name: Dependencies
           command: |
-            apt-get update -y -q
-            apt-get install -y -q \
-              build-essential \
-              python-dev \
-              python-setuptools
-            easy_install pip
+            apk add --update python py-pip
             pip install cram
       - setup_remote_docker:
           reusable: true
