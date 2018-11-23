@@ -12,7 +12,7 @@ jobs:
           version: 17.07.0-ce
       - run:
           name: Dependencies
-          command: apk add --upgrade make
+          command: apk add --update make
       - run:
           name: Build
           command: make image image.test
