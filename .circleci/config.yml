@@ -5,14 +5,12 @@ jobs:
   build:
     docker:
       - image: docker:17.07.0-ce
-    environment:
-      DEBIAN_FRONTEND: noninteractive
     steps:
       - checkout
       - run:
           name: Dependencies
           command: |
-            apk add --update python py-pip
+            apk add --update make python py-pip
             pip install cram
       - setup_remote_docker:
           reusable: true
