@@ -7,25 +7,12 @@ jobs:
       - image: docker:17.07.0-ce
     steps:
       - checkout
-      - run:
-          name: Dependencies
-          command: |
-            apk add --update make python py-pip
-            pip install cram
       - setup_remote_docker:
           reusable: true
           version: 17.07.0-ce
       - run:
           name: Build
-          command: make image
+          command: make image image.test
       - run:
           name: Test
-          command: |
-            # This doesn't work because our tests rely on mounting local files
-            # into the just-built docker image. On CI, the Docker daemon is
-            # remote so the mount doesn't see any files. We keep CI around to at
-            # least confirm the image builds successfully, but we can't actually
-            # run the tests until we figure out some other way to do this.
-            #
-            # make citest
-            echo "Tests disabled"
+          command: make test
