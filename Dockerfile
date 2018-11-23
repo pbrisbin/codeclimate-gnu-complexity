@@ -1,5 +1,5 @@
 FROM debian:jessie
-MAINTAINER Pat Bribin <pat@codeclimate.com>
+MAINTAINER Pat Bribin <pbrisbin@gmail.com>
 
 ENV COMPLEXITY_VERSION=1.2
 ENV DEBIAN_FRONTEND=noninteractive

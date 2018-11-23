@@ -20,4 +20,12 @@ jobs:
           command: make image
       - run:
           name: Test
-          command: make citest
+          command: |
+            # This doesn't work because our tests rely on mounting local files
+            # into the just-built docker image. On CI, the Docker daemon is
+            # remote so the mount doesn't see any files. We keep CI around to at
+            # least confirm the image builds successfully, but we can't actually
+            # run the tests until we figure out some other way to do this.
+            #
+            # make citest
+            echo "Tests disabled"
