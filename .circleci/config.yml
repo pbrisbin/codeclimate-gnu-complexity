@@ -1,0 +1,30 @@
+---
+version: 2.0
+
+jobs:
+  build:
+    docker:
+      - image: docker:17.07.0-ce
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - checkout
+      - run:
+          name: Dependencies
+          command: |
+            apt-get update -y -q
+            apt-get install -y -q \
+              build-essential \
+              python-dev \
+              python-setuptools
+            easy_install pip
+            pip install cram
+      - setup_remote_docker:
+          reusable: true
+          version: 17.07.0-ce
+      - run:
+          name: Build
+          command: make image
+      - run:
+          name: Test
+          command: make citest
